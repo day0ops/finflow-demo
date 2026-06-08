@@ -107,7 +107,7 @@ def test_agent_card():
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == "finflow-orchestrator"
-    assert data["framework"] == "kagent"
+    assert data["framework"] == "custom"
     assert "capabilities" in data
     assert "authentication" in data
 
