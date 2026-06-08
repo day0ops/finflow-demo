@@ -1,0 +1,15 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: finflow-trade-execution
+spec:
+  source:
+    image: localhost:5000/finflow/trade-execution-agent:latest
+    repository:
+      url: https://github.com/<YOUR_ORG>/finflow-demo
+      subfolder: agents/trade-execution
+  language: python
+  framework: anthropic-sdk
+  modelProvider: anthropic
+  modelName: claude-opus-4-6
+  description: "Stock trade execution (BUY/SELL), order status, and order history via MCP"

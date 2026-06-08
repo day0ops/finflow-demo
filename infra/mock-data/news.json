@@ -1,0 +1,89 @@
+{
+  "NVDA": [
+    {
+      "headline": "NVIDIA Reports Record Data Center Revenue, Beats Q1 Estimates",
+      "source": "Reuters",
+      "date": "2026-06-05",
+      "sentiment": "positive",
+      "score": 0.82
+    },
+    {
+      "headline": "NVIDIA H200 Supply Constraints Ease as TSMC Ramps Production",
+      "source": "Bloomberg",
+      "date": "2026-06-04",
+      "sentiment": "positive",
+      "score": 0.71
+    },
+    {
+      "headline": "AMD Closes GPU Market Share Gap With New MI400 Launch",
+      "source": "The Verge",
+      "date": "2026-06-03",
+      "sentiment": "negative",
+      "score": -0.44
+    }
+  ],
+  "AAPL": [
+    {
+      "headline": "Apple Intelligence Adoption Drives iPhone 17 Upgrade Cycle",
+      "source": "9to5Mac",
+      "date": "2026-06-05",
+      "sentiment": "positive",
+      "score": 0.65
+    },
+    {
+      "headline": "Apple Faces Renewed EU Antitrust Scrutiny Over App Store",
+      "source": "Financial Times",
+      "date": "2026-06-04",
+      "sentiment": "negative",
+      "score": -0.52
+    }
+  ],
+  "MSFT": [
+    {
+      "headline": "Microsoft Azure AI Revenue Surpasses $20B Annual Run Rate",
+      "source": "CNBC",
+      "date": "2026-06-05",
+      "sentiment": "positive",
+      "score": 0.88
+    },
+    {
+      "headline": "Microsoft Copilot Enterprise Seats Cross 10 Million Milestone",
+      "source": "Bloomberg",
+      "date": "2026-06-04",
+      "sentiment": "positive",
+      "score": 0.76
+    }
+  ],
+  "GOOGL": [
+    {
+      "headline": "Google Search Ad Revenue Holds Steady Despite AI Competition",
+      "source": "WSJ",
+      "date": "2026-06-05",
+      "sentiment": "neutral",
+      "score": 0.12
+    },
+    {
+      "headline": "Gemini Ultra Gains Traction in Enterprise Deals",
+      "source": "TechCrunch",
+      "date": "2026-06-04",
+      "sentiment": "positive",
+      "score": 0.58
+    }
+  ],
+  "AMZN": [
+    {
+      "headline": "AWS Wins Pentagon JWCC Contract Extension Worth $9B",
+      "source": "Reuters",
+      "date": "2026-06-05",
+      "sentiment": "positive",
+      "score": 0.79
+    },
+    {
+      "headline": "Amazon Prime Day Discounts Expected to Compress Q2 Margins",
+      "source": "Bloomberg",
+      "date": "2026-06-04",
+      "sentiment": "negative",
+      "score": -0.38
+    }
+  ]
+}

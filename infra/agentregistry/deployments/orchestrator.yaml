@@ -1,0 +1,29 @@
+apiVersion: ar.dev/v1alpha1
+kind: Deployment
+metadata:
+  name: finflow-orchestrator
+spec:
+  targetRef:
+    kind: Agent
+    name: finflow-orchestrator
+    tag: "latest"
+  runtimeRef:
+    kind: Runtime
+    name: agentcore
+  runtimeConfig:
+    region: ${AWS_REGION}
+    workdir: agents/orchestrator
+    networkMode: vpc
+    subnetIds:
+      - ${SUBNET_ID}
+    securityGroupIds:
+      - ${SG_ID}
+    env:
+      - name: MARKET_DATA_AGENT_URL
+        value: "http://${AGENTGATEWAY_HOST}/agents/market-data"
+      - name: PORTFOLIO_AGENT_URL
+        value: "http://${AGENTGATEWAY_HOST}/agents/portfolio"
+      - name: NEWS_SENTIMENT_AGENT_URL
+        value: "http://${AGENTGATEWAY_HOST}/agents/news-sentiment"
+      - name: TRADE_EXECUTION_AGENT_URL
+        value: "http://${AGENTGATEWAY_HOST}/agents/trade-execution"

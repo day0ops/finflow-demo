@@ -1,0 +1,77 @@
+{
+  "NVDA": {
+    "ticker": "NVDA",
+    "name": "NVIDIA Corp",
+    "price": 134.87,
+    "change_pct": 2.41,
+    "volume": 48203100,
+    "sector": "Technology",
+    "history": [
+      {"date": "2026-06-05", "close": 131.70},
+      {"date": "2026-06-04", "close": 129.45},
+      {"date": "2026-06-03", "close": 133.20},
+      {"date": "2026-06-02", "close": 128.90},
+      {"date": "2026-05-30", "close": 126.10}
+    ]
+  },
+  "AAPL": {
+    "ticker": "AAPL",
+    "name": "Apple Inc",
+    "price": 211.50,
+    "change_pct": -0.83,
+    "volume": 52108400,
+    "sector": "Technology",
+    "history": [
+      {"date": "2026-06-05", "close": 213.26},
+      {"date": "2026-06-04", "close": 210.88},
+      {"date": "2026-06-03", "close": 214.50},
+      {"date": "2026-06-02", "close": 209.31},
+      {"date": "2026-05-30", "close": 207.45}
+    ]
+  },
+  "MSFT": {
+    "ticker": "MSFT",
+    "name": "Microsoft Corp",
+    "price": 442.31,
+    "change_pct": 1.12,
+    "volume": 19847200,
+    "sector": "Technology",
+    "history": [
+      {"date": "2026-06-05", "close": 437.40},
+      {"date": "2026-06-04", "close": 435.10},
+      {"date": "2026-06-03", "close": 440.80},
+      {"date": "2026-06-02", "close": 438.25},
+      {"date": "2026-05-30", "close": 432.90}
+    ]
+  },
+  "GOOGL": {
+    "ticker": "GOOGL",
+    "name": "Alphabet Inc",
+    "price": 178.92,
+    "change_pct": 0.67,
+    "volume": 24503100,
+    "sector": "Technology",
+    "history": [
+      {"date": "2026-06-05", "close": 177.73},
+      {"date": "2026-06-04", "close": 175.40},
+      {"date": "2026-06-03", "close": 179.10},
+      {"date": "2026-06-02", "close": 176.85},
+      {"date": "2026-05-30", "close": 174.20}
+    ]
+  },
+  "AMZN": {
+    "ticker": "AMZN",
+    "name": "Amazon.com Inc",
+    "price": 228.14,
+    "change_pct": -0.34,
+    "volume": 31204500,
+    "sector": "Consumer Discretionary",
+    "history": [
+      {"date": "2026-06-05", "close": 228.91},
+      {"date": "2026-06-04", "close": 226.40},
+      {"date": "2026-06-03", "close": 230.15},
+      {"date": "2026-06-02", "close": 225.80},
+      {"date": "2026-05-30", "close": 223.45}
+    ]
+  }
+}

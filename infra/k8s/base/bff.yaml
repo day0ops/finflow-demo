@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finflow-bff
+  namespace: finflow
+  labels:
+    app: finflow-bff
+    app.kubernetes.io/part-of: finflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finflow-bff
+  template:
+    metadata:
+      labels:
+        app: finflow-bff
+    spec:
+      containers:
+        - name: bff
+          image: finflow/bff:latest
+          ports:
+            - containerPort: 8001
+          env:
+            - name: ORCHESTRATOR_URL
+              value: "http://finflow-orchestrator:8000"
+            - name: AUTH_ENABLED
+              value: "true"
+            - name: KEYCLOAK_ISSUER
+              value: "https://$(KEYCLOAK_HOSTNAME)/realms/finflow"
+            - name: APP_URL
+              value: "https://$(FINFLOW_HOSTNAME)"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finflow-bff
+  namespace: finflow
+  labels:
+    app: finflow-bff
+    app.kubernetes.io/part-of: finflow
+spec:
+  selector:
+    app: finflow-bff
+  ports:
+    - port: 8001
+      targetPort: 8001
+  type: ClusterIP

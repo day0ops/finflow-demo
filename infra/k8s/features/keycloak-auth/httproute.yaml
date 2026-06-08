@@ -1,0 +1,27 @@
+# HTTPRoute — exposes finflow-bff through the AgentGateway proxy.
+# Apply to the agentgateway-system namespace so the route is owned by the gateway.
+#
+# Prerequisites:
+#   kubectl create namespace finflow (if not already created)
+#   kubectl apply -f infra/k8s/base/  (deploys finflow-bff service in finflow namespace)
+#
+# The callbackPath (/api/callback) is intercepted by AgentGateway's ExtAuth
+# service; it never reaches the BFF.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: finflow-bff
+  namespace: agentgateway-system
+spec:
+  parentRefs:
+    - name: agentgateway-proxy
+      namespace: agentgateway-system
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: finflow-bff
+          namespace: finflow
+          port: 8001

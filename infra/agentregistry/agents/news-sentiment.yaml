@@ -1,0 +1,15 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: finflow-news-sentiment
+spec:
+  source:
+    image: localhost:5000/finflow/news-sentiment-agent:latest
+    repository:
+      url: https://github.com/<YOUR_ORG>/finflow-demo
+      subfolder: agents/news-sentiment
+  language: python
+  framework: anthropic-sdk
+  modelProvider: anthropic
+  modelName: claude-opus-4-6
+  description: "News headlines and sentiment analysis for portfolio tickers via MCP"

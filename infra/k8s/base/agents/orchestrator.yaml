@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finflow-orchestrator
+  namespace: finflow
+  labels:
+    app: finflow-orchestrator
+    app.kubernetes.io/part-of: finflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finflow-orchestrator
+  template:
+    metadata:
+      labels:
+        app: finflow-orchestrator
+    spec:
+      containers:
+        - name: agent
+          image: finflow/orchestrator:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MARKET_DATA_AGENT_URL
+              value: "http://market-data-agent:8000"
+            - name: PORTFOLIO_AGENT_URL
+              value: "http://portfolio-agent:8000"
+            - name: NEWS_SENTIMENT_AGENT_URL
+              value: "http://news-sentiment-agent:8000"
+            - name: TRADE_EXECUTION_AGENT_URL
+              value: "http://trade-execution-agent:8000"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finflow-orchestrator
+  namespace: finflow
+  labels:
+    app: finflow-orchestrator
+    app.kubernetes.io/part-of: finflow
+spec:
+  selector:
+    app: finflow-orchestrator
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP

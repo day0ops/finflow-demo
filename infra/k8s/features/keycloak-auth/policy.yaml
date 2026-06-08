@@ -1,0 +1,21 @@
+# EnterpriseAgentgatewayPolicy — enforces ExtAuth on the finflow-bff HTTPRoute.
+# All requests to /api/* must present a valid keycloak-session cookie.
+apiVersion: enterpriseagentgateway.solo.io/v1alpha1
+kind: EnterpriseAgentgatewayPolicy
+metadata:
+  name: finflow-oauth
+  namespace: agentgateway-system
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: finflow-bff
+  traffic:
+    entExtAuth:
+      authConfigRef:
+        name: finflow-oauth
+        namespace: agentgateway-system
+      backendRef:
+        name: ext-auth-service-enterprise-agentgateway
+        namespace: agentgateway-system
+        port: 8083

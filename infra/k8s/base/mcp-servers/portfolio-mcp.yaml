@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-mcp
+  namespace: finflow
+  labels:
+    app: portfolio-mcp
+    app.kubernetes.io/part-of: finflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-mcp
+  template:
+    metadata:
+      labels:
+        app: portfolio-mcp
+    spec:
+      initContainers:
+        - name: seed-db
+          image: finflow/portfolio-mcp:latest
+          command:
+            - uv
+            - run
+            - python
+            - -c
+            - "import sqlite3, pathlib; sql=pathlib.Path('/seed/holdings.sql').read_text(); conn=sqlite3.connect('/data/portfolio.db'); conn.executescript(sql); conn.commit()"
+          volumeMounts:
+            - name: db-data
+              mountPath: /data
+            - name: seed-data
+              mountPath: /seed
+      containers:
+        - name: server
+          image: finflow/portfolio-mcp:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_PATH
+              value: /data/portfolio.db
+          volumeMounts:
+            - name: db-data
+              mountPath: /data
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: db-data
+          emptyDir: {}
+        - name: seed-data
+          configMap:
+            name: portfolio-seed-sql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portfolio-mcp
+  namespace: finflow
+  labels:
+    app: portfolio-mcp
+    app.kubernetes.io/part-of: finflow
+spec:
+  selector:
+    app: portfolio-mcp
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-seed-sql
+  namespace: finflow
+data:
+  holdings.sql: |
+    CREATE TABLE IF NOT EXISTS holdings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL,
+        ticker TEXT NOT NULL,
+        shares REAL NOT NULL,
+        cost_basis REAL NOT NULL,
+        UNIQUE(user_id, ticker)
+    );
+    INSERT OR REPLACE INTO holdings (user_id, ticker, shares, cost_basis) VALUES
+      ('morgan', 'NVDA',  100.0,  95.40),
+      ('morgan', 'AAPL',   50.0, 155.20),
+      ('morgan', 'MSFT',  200.0, 380.90),
+      ('morgan', 'GOOGL',  30.0, 148.60),
+      ('alex',   'AAPL',   50.0, 160.50),
+      ('alex',   'MSFT',  100.0, 395.20);

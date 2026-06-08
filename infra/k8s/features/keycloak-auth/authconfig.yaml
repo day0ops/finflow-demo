@@ -1,0 +1,47 @@
+# AuthConfig — OIDC authorization code flow using Keycloak finflow realm.
+# Deployed via the agentic demo framework usecase:
+#   config/usecases/security/finflow-oauth.yaml
+#
+# Or apply directly after substituting env vars:
+#   envsubst < authconfig.yaml | kubectl apply -f -
+#
+# Required env vars:
+#   KEYCLOAK_HOSTNAME   — e.g. keycloak.example.com
+#   FINFLOW_HOSTNAME    — e.g. finflow.example.com
+#   FINFLOW_BFF_SECRET  — Keycloak client secret for finflow-bff (default: finflow-bff-secret)
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: finflow-oauth-keycloak
+  namespace: agentgateway-system
+type: extauth.solo.io/oauth
+stringData:
+  client-secret: "${FINFLOW_BFF_SECRET:-finflow-bff-secret}"
+---
+apiVersion: extauth.solo.io/v1
+kind: AuthConfig
+metadata:
+  name: finflow-oauth
+  namespace: agentgateway-system
+spec:
+  configs:
+    - oauth2:
+        oidcAuthorizationCode:
+          appUrl: "https://${FINFLOW_HOSTNAME}"
+          callbackPath: /api/callback
+          clientId: finflow-bff
+          clientSecretRef:
+            name: finflow-oauth-keycloak
+            namespace: agentgateway-system
+          issuerUrl: "https://${KEYCLOAK_HOSTNAME}/realms/finflow/"
+          scopes:
+            - email
+          session:
+            failOnFetchFailure: true
+            redis:
+              cookieName: keycloak-session
+              options:
+                host: ext-cache-enterprise-agentgateway:6379
+          headers:
+            idTokenHeader: jwt

@@ -1,0 +1,15 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: finflow-orchestrator
+spec:
+  source:
+    image: localhost:5000/finflow/orchestrator:latest
+    repository:
+      url: https://github.com/<YOUR_ORG>/finflow-demo
+      subfolder: agents/orchestrator
+  language: python
+  framework: custom
+  modelProvider: none
+  modelName: none
+  description: "Intent-driven orchestrator — routes briefing and trade requests to sub-agents in parallel"
