@@ -2,8 +2,15 @@ import json
 
 from data import TICKERS
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 mcp = FastMCP("market-data-mcp")
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request: Request) -> JSONResponse:
+    return JSONResponse({"status": "ok"})
 
 
 @mcp.tool()
