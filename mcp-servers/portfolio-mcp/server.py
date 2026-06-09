@@ -4,8 +4,16 @@ import sqlite3
 
 from db import CURRENT_PRICES, calculate_pl, get_connection, get_holdings, seed_db
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 mcp = FastMCP("portfolio-mcp")
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request: Request) -> JSONResponse:
+    return JSONResponse({"status": "ok"})
+
 
 _DB_PATH = os.environ.get("DB_PATH", "/data/portfolio.db")
 _conn: sqlite3.Connection | None = None

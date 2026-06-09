@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 from store import ORDER_STORE
 
 # Load current prices for order execution
@@ -12,6 +14,11 @@ with open(_TICKERS_FILE) as f:
 mcp = FastMCP("brokerage-mcp")
 
 VALID_ACTIONS = {"BUY", "SELL"}
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request: Request) -> JSONResponse:
+    return JSONResponse({"status": "ok"})
 
 
 @mcp.tool()
