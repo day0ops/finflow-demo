@@ -5,12 +5,15 @@ from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-from tools import execute_trade, get_order_status, list_orders
+
+from .mcp_tools import get_mcp_tools
 
 # Route all LLM calls through agentgateway's OpenAI-compatible endpoint.
 # LiteLlm reads OPENAI_BASE_URL + OPENAI_API_KEY from environment.
 os.environ.setdefault("OPENAI_BASE_URL", os.getenv("LLM_BASE_URL", "http://agentgateway.finflow.svc/v1"))
 os.environ.setdefault("OPENAI_API_KEY", os.getenv("LLM_API_KEY", "demo"))
+
+mcp_tools = get_mcp_tools()
 
 root_agent = Agent(
     name="trade-execution-agent",
@@ -22,7 +25,7 @@ root_agent = Agent(
         "and list_orders to review all orders for a user. "
         "Always use tools — never invent trade data or order IDs."
     ),
-    tools=[execute_trade, get_order_status, list_orders],
+    tools=mcp_tools,
 )
 
 _session_service = InMemorySessionService()
