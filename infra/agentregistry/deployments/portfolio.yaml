@@ -10,6 +10,9 @@ spec:
   runtimeRef:
     kind: Runtime
     name: agentcore
+  env:
+    LLM_BASE_URL: https://app.mesh-demo.kasunt.apac.fe.solo.io/openai/v1
+    PORTFOLIO_MCP_URL: https://app.mesh-demo.kasunt.apac.fe.solo.io/finflow/portfolio
   runtimeConfig:
     region: ${AWS_REGION}
     workdir: agents/portfolio
