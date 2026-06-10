@@ -12,7 +12,7 @@ from tools import get_allocation, get_portfolio
 os.environ.setdefault("OPENAI_BASE_URL", os.getenv("LLM_BASE_URL", "http://agentgateway.finflow.svc/v1"))
 os.environ.setdefault("OPENAI_API_KEY", os.getenv("LLM_API_KEY", "demo"))
 
-_root_agent = Agent(
+root_agent = Agent(
     name="portfolio-agent",
     model=LiteLlm(model=os.getenv("LLM_MODEL", "openai/gpt-4o")),
     description="Portfolio holdings, P&L, and allocation analysis",
@@ -27,7 +27,7 @@ _root_agent = Agent(
 
 _session_service = InMemorySessionService()
 _runner = Runner(
-    agent=_root_agent,
+    agent=root_agent,
     app_name="portfolio-agent",
     session_service=_session_service,
 )
