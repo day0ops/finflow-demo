@@ -1,0 +1,19 @@
+{
+  "name": "finflow-portfolio",
+  "description": "Portfolio holdings, P&L, and allocation analysis",
+  "url": "http://localhost:8080",
+  "version": "0.0.1",
+  "capabilities": {
+    "streaming": true
+  },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [
+    {
+      "id": "finflow-portfolio",
+      "name": "finflow-portfolio",
+      "description": "Portfolio holdings, P&L, and allocation analysis",
+      "tags": ["finflow", "portfolio", "finance"]
+    }
+  ]
+}

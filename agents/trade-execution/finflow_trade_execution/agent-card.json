@@ -1,0 +1,19 @@
+{
+  "name": "finflow-trade-execution",
+  "description": "Stock trade execution (BUY/SELL), order status, and order history",
+  "url": "http://localhost:8080",
+  "version": "0.0.1",
+  "capabilities": {
+    "streaming": true
+  },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [
+    {
+      "id": "finflow-trade-execution",
+      "name": "finflow-trade-execution",
+      "description": "Stock trade execution (BUY/SELL), order status, and order history",
+      "tags": ["finflow", "trade", "brokerage", "finance"]
+    }
+  ]
+}

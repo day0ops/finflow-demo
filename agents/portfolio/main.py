@@ -7,7 +7,7 @@ app = BedrockAgentCoreApp()
 
 @app.entrypoint
 def invoke(payload: dict) -> dict:
-    from agent import run_agent  # lazy import
+    from finflow_portfolio.agent import run_agent  # lazy import
 
     input_text = payload.get("input", "")
     session_id = payload.get("session_id", "default")
