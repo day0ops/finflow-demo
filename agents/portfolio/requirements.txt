@@ -1,3 +1,5 @@
+# 1.25.1 bundles LiteLLM directly; later 1.x versions moved it to [extensions]
+google-adk==1.25.1
 bedrock-agentcore>=1.0
 fastapi>=0.115.0
 uvicorn[standard]>=0.34.0
