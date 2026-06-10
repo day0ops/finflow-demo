@@ -1,23 +1,18 @@
 import os
 
 from google.adk.agents import Agent
-from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from .mcp_tools import get_mcp_tools
-
-# Route all LLM calls through agentgateway's OpenAI-compatible endpoint.
-# LiteLlm reads OPENAI_BASE_URL + OPENAI_API_KEY from environment.
-os.environ.setdefault("OPENAI_BASE_URL", os.getenv("LLM_BASE_URL", "http://agentgateway.finflow.svc/v1"))
-os.environ.setdefault("OPENAI_API_KEY", os.getenv("LLM_API_KEY", "demo"))
+from .openai_model import OpenAICompatibleLlm
 
 mcp_tools = get_mcp_tools()
 
 root_agent = Agent(
     name="trade-execution-agent",
-    model=LiteLlm(model=os.getenv("LLM_MODEL", "openai/gpt-4o")),
+    model=OpenAICompatibleLlm(model=os.getenv("LLM_MODEL", "gpt-4o")),
     description="Stock trade execution (BUY/SELL), order status, and order history",
     instruction=(
         "You are a trade execution agent for the FinFlow financial demo. "

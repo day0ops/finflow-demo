@@ -1,5 +1,5 @@
-# Install google-adk with [extensions] so LiteLLM is always available regardless of 1.x version
-google-adk[extensions]>=1.25.0,<2.0.0
+# No [extensions] — LiteLLM not needed; OpenAICompatibleLlm uses openai directly (in bundle via kagent-adk)
+google-adk>=1.25.0,<2.0.0
 bedrock-agentcore>=1.0
 fastapi>=0.115.0
 uvicorn[standard]>=0.34.0
