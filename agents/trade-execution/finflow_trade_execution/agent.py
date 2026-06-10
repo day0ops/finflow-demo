@@ -11,7 +11,7 @@ from .openai_model import OpenAICompatibleLlm
 mcp_tools = get_mcp_tools()
 
 root_agent = Agent(
-    name="trade-execution-agent",
+    name="trade_execution_agent",
     model=OpenAICompatibleLlm(model=os.getenv("LLM_MODEL", "gpt-4o")),
     description="Stock trade execution (BUY/SELL), order status, and order history",
     instruction=(
@@ -26,14 +26,14 @@ root_agent = Agent(
 _session_service = InMemorySessionService()
 _runner = Runner(
     agent=root_agent,
-    app_name="trade-execution-agent",
+    app_name="trade_execution_agent",
     session_service=_session_service,
 )
 
 
 async def run_agent(input: str, session_id: str, context: dict = {}) -> str:
     await _session_service.create_session(
-        app_name="trade-execution-agent",
+        app_name="trade_execution_agent",
         user_id=session_id,
         session_id=session_id,
     )
