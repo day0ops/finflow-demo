@@ -5,9 +5,12 @@ package cost. This keeps the Lambda zip well under the 750 MB AgentCore limit.
 """
 
 import json
+import logging
 import os
 from functools import cached_property
 from typing import AsyncGenerator, Optional
+
+_log = logging.getLogger(__name__)
 
 from google.adk.models import BaseLlm
 from google.adk.models.llm_response import LlmResponse
@@ -147,6 +150,10 @@ class OpenAICompatibleLlm(BaseLlm):
         if tools:
             kwargs["tools"] = tools
             kwargs["tool_choice"] = "auto"
+        _log.info("LLM request: model=%s msgs=%d tools=%s payload=%s",
+                  kwargs["model"], len(messages),
+                  len(kwargs.get("tools") or []),
+                  json.dumps(kwargs, default=str))
         try:
             response = await self._client.chat.completions.create(**kwargs)
             choice = response.choices[0]
