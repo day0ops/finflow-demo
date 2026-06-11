@@ -23,14 +23,19 @@ def _openai_role(adk_role: Optional[str]) -> str:
 
 
 def _schema_to_dict(schema) -> dict:
-    """Recursively convert google.genai Schema → plain dict (renames type_ → type)."""
+    """Recursively convert google.genai Schema → plain dict (renames type_ → type, lowercases type values)."""
     if schema is None:
         return {"type": "object", "properties": {}}
     if isinstance(schema, dict):
         result = {}
         for k, v in schema.items():
             key = "type" if k == "type_" else k
-            result[key] = _schema_to_dict(v) if isinstance(v, dict) else v
+            if key == "type" and isinstance(v, str):
+                result[key] = v.lower()
+            elif isinstance(v, dict):
+                result[key] = _schema_to_dict(v)
+            else:
+                result[key] = v
         return {k: v for k, v in result.items() if v is not None}
     if hasattr(schema, "model_dump"):
         return _schema_to_dict(schema.model_dump(exclude_none=True, mode="json"))
