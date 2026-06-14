@@ -67,7 +67,7 @@ def test_agent_card():
     from fastapi.testclient import TestClient
 
     with TestClient(agent_server.app) as client:
-        response = client.get("/.well-known/agent.json")
+        response = client.get("/.well-known/agent-card.json")
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == "portfolio-agent"

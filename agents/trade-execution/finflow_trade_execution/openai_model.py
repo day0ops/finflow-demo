@@ -10,12 +10,12 @@ import os
 from functools import cached_property
 from typing import AsyncGenerator, Optional
 
-_log = logging.getLogger(__name__)
-
 from google.adk.models import BaseLlm
 from google.adk.models.llm_response import LlmResponse
 from google.genai import types
 from pydantic import Field
+
+_log = logging.getLogger(__name__)
 
 
 def _openai_role(adk_role: Optional[str]) -> str:
@@ -46,27 +46,31 @@ def _contents_to_messages(contents, system_text: Optional[str] = None) -> list:
     msgs = []
     if system_text:
         msgs.append({"role": "system", "content": system_text})
-    for c in (contents or []):
+    for c in contents or []:
         parts = c.parts or []
         tool_calls, tool_results, texts = [], [], []
         for p in parts:
             fc = getattr(p, "function_call", None)
             fr = getattr(p, "function_response", None)
             if fc:
-                tool_calls.append({
-                    "id": getattr(fc, "id", None) or f"call_{fc.name}",
-                    "type": "function",
-                    "function": {
-                        "name": fc.name,
-                        "arguments": json.dumps(dict(fc.args) if fc.args else {}),
-                    },
-                })
+                tool_calls.append(
+                    {
+                        "id": getattr(fc, "id", None) or f"call_{fc.name}",
+                        "type": "function",
+                        "function": {
+                            "name": fc.name,
+                            "arguments": json.dumps(dict(fc.args) if fc.args else {}),
+                        },
+                    }
+                )
             elif fr:
-                tool_results.append({
-                    "role": "tool",
-                    "tool_call_id": getattr(fr, "id", None) or f"call_{fr.name}",
-                    "content": json.dumps(fr.response) if fr.response else "",
-                })
+                tool_results.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": getattr(fr, "id", None) or f"call_{fr.name}",
+                        "content": json.dumps(fr.response) if fr.response else "",
+                    }
+                )
             elif getattr(p, "text", None):
                 texts.append(p.text)
         if tool_results:
@@ -90,14 +94,16 @@ def _tools_to_openai(config) -> Optional[list]:
     result = []
     for tool in tools_config:
         for fd in getattr(tool, "function_declarations", []) or []:
-            result.append({
-                "type": "function",
-                "function": {
-                    "name": fd.name,
-                    "description": getattr(fd, "description", "") or "",
-                    "parameters": _schema_to_dict(getattr(fd, "parameters", None)),
-                },
-            })
+            result.append(
+                {
+                    "type": "function",
+                    "function": {
+                        "name": fd.name,
+                        "description": getattr(fd, "description", "") or "",
+                        "parameters": _schema_to_dict(getattr(fd, "parameters", None)),
+                    },
+                }
+            )
     return result or None
 
 
@@ -130,6 +136,7 @@ class OpenAICompatibleLlm(BaseLlm):
     @cached_property
     def _client(self):
         import openai  # in bundle via kagent-adk
+
         return openai.AsyncOpenAI(
             base_url=self.base_url or os.getenv("LLM_BASE_URL", "http://agentgateway.finflow.svc/v1"),
             api_key=self.api_key or os.getenv("LLM_API_KEY", "demo"),
@@ -155,10 +162,13 @@ class OpenAICompatibleLlm(BaseLlm):
         if tools:
             kwargs["tools"] = tools
             kwargs["tool_choice"] = "auto"
-        _log.info("LLM request: model=%s msgs=%d tools=%s payload=%s",
-                  kwargs["model"], len(messages),
-                  len(kwargs.get("tools") or []),
-                  json.dumps(kwargs, default=str))
+        _log.info(
+            "LLM request: model=%s msgs=%d tools=%s payload=%s",
+            kwargs["model"],
+            len(messages),
+            len(kwargs.get("tools") or []),
+            json.dumps(kwargs, default=str),
+        )
         try:
             response = await self._client.chat.completions.create(**kwargs)
             choice = response.choices[0]
@@ -170,11 +180,15 @@ class OpenAICompatibleLlm(BaseLlm):
                         args = json.loads(tc.function.arguments) if tc.function.arguments else {}
                     except (json.JSONDecodeError, TypeError):
                         args = {}
-                    parts.append(types.Part(
-                        function_call=types.FunctionCall(
-                            id=tc.id, name=tc.function.name, args=args,
+                    parts.append(
+                        types.Part(
+                            function_call=types.FunctionCall(
+                                id=tc.id,
+                                name=tc.function.name,
+                                args=args,
+                            )
                         )
-                    ))
+                    )
             if getattr(msg, "content", None):
                 parts.append(types.Part(text=msg.content))
             yield LlmResponse(content=types.Content(role="model", parts=parts))
