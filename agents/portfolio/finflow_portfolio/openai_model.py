@@ -10,12 +10,12 @@ import os
 from functools import cached_property
 from typing import AsyncGenerator, Optional
 
-_log = logging.getLogger(__name__)
-
 from google.adk.models import BaseLlm
 from google.adk.models.llm_response import LlmResponse
 from google.genai import types
 from pydantic import Field
+
+_log = logging.getLogger(__name__)
 
 
 def _openai_role(adk_role: Optional[str]) -> str:
