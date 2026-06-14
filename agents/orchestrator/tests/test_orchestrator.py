@@ -103,7 +103,7 @@ def test_agent_card():
     from server import app
 
     with TestClient(app) as client:
-        response = client.get("/.well-known/agent.json")
+        response = client.get("/.well-known/agent-card.json")
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == "finflow-orchestrator"
