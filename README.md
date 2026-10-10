@@ -1,4 +1,4 @@
-# FinFlow Demo
+# FinFlow - Multi-Agent Portfolio Assistant
 
 [![CI](https://github.com/day0ops/finflow-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/day0ops/finflow-demo/actions/workflows/ci.yml)
 [![Release](https://github.com/day0ops/finflow-demo/actions/workflows/release.yml/badge.svg)](https://github.com/day0ops/finflow-demo/actions/workflows/release.yml)
@@ -8,15 +8,23 @@ Multi-agent financial portfolio assistant demonstrating the Solo.io agentic prod
 
 ## Architecture
 
-```
-Browser → AgentGateway (auth, rate-limit, guardrails, RBAC)
-              └── BFF (Next.js + FastAPI)
-                    └── Orchestrator
-                          ├── Market Data Agent   (Google ADK + MCP)
-                          ├── Portfolio Agent     (Google ADK + MCP)
-                          ├── News Sentiment Agent (Anthropic SDK + MCP)
-                          └── Trade Execution Agent (Anthropic SDK + MCP)
-```
+FinFlow is a multi-agent portfolio assistant fronted by the Solo.io agentic suite.
+
+Two views of the system:
+
+### Request flow
+
+A chat request travels from the browser through AgentGateway (ingress auth) to the BFF, then the Orchestrator. The Orchestrator fans a *briefing* out to three agents in parallel and routes a *trade* to a single agent. Every agent reaches its LLM and MCP tool server back out through AgentGateway. Dashboard data (portfolio, tickers, news) is served directly by the BFF from mock data and never touches the agents.
+
+![FinFlow request flow](docs/images/architecture-flow.svg)
+
+### Platform & deployment
+
+AgentGateway is the single control point for north-south auth (OIDC via Keycloak), LLM egress, and MCP routing (RBAC, guardrails, OBO token exchange). AgentRegistry catalogs the agents and can deploy them to Amazon Bedrock AgentCore; Istio ambient provides mTLS inside the `finflow` namespace.
+
+![FinFlow platform and deployment](docs/images/architecture-platform.svg)
+
+Each agent ships two entry points: `server.py` (FastAPI, for Kubernetes) and `main.py` (`BedrockAgentCoreApp`, for AgentCore). Frameworks: Market Data, Portfolio, and Trade Execution use Google ADK; News Sentiment uses the Anthropic SDK; the Orchestrator is a custom HTTP dispatcher.
 
 ## Repository Structure
 
@@ -24,7 +32,7 @@ Browser → AgentGateway (auth, rate-limit, guardrails, RBAC)
 |---|---|
 | `agents/` | Agent implementations (orchestrator, market-data, portfolio, news-sentiment, trade-execution) |
 | `mcp-servers/` | FastMCP tool servers (market-data, portfolio, news, brokerage) |
-| `bff/` | Backend-for-frontend (FastAPI) — proxies requests, handles auth |
+| `bff/` | Backend-for-frontend (FastAPI) - proxies requests, handles auth |
 | `ui/` | Next.js frontend |
 | `infra/k8s/` | Kubernetes manifests (base + feature overlays) |
 | `infra/agentregistry/` | AgentRegistry catalog and AgentCore deployment manifests |
